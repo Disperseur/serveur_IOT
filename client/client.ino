@@ -1,5 +1,5 @@
 #include <WiFiNINA.h>
-#include "ArduinoLowPower.h"
+#include "MKRLiPo2A_LowPower.h"
 #define LOWPOWER_SLEEPTIME 5000 //ms
 
 // Paramètres WiFi
@@ -10,7 +10,6 @@ char pass[] = "iphone69";      // Mot de passe WiFi
 char server[] = "172.20.10.4"; // Adresse IP du PC
 int port = 8080;               // Port du serveur
 
-int compteur = 0;
 
 WiFiClient client;
 
@@ -18,7 +17,8 @@ void setup() {
   Serial.begin(9600);
   while (!Serial) {}
 
-  Serial.println("Programme démarré.");
+  // setup de la gestion de batterie
+  LowPower_Setup();
 }
 
 void loop() {
@@ -55,11 +55,10 @@ void loop() {
     Serial.println("Connecté au serveur !");
 
     // Envoi d'un message au serveur
-    String message = "Ceci est un message de l'Arduino: ";
-    client.print(message + String(compteur));
+    String message = "Tension batterie: ";
+    message += String(LowPower_getBattery()) + "%";
+    client.print(message);
     Serial.println("Message envoyé : " + message);
-
-    compteur++;
 
     // Déconnexion du serveur
     delay(500);
